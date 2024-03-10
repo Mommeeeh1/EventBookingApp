@@ -1,0 +1,126 @@
+﻿@page
+@model TicketHive.Server.Areas.Identity.Pages.Account.LogInModel
+@{
+    Layout = "_MyLayout";
+}
+
+
+
+<form method="post">
+    <div id="container">
+        <header>
+            <img id="img-logo" src="/Images/black.png">
+        </header>
+
+    </div>
+    <body>
+        <div class="card mx-auto" style="width: 18rem;">
+            <div class="card-body">
+                <div class="col text-center">
+                    <input id="input-username" type="text" asp-for="Username" class="form-control mb-2 mx-auto" placeholder="Username" />
+                    <span class="text-danger" asp-validation-for="Username"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col text-center">
+                    <input id="input-password" type="password" asp-for="Password" class="form-control mb-2 mx-auto" placeholder="Password" />
+                    <span class="text-danger" asp-validation-for="Password"></span>
+                </div>
+            </div>
+            <div class="text-center">
+                <input id="signin-id" type="submit" value="Sign in" class="btn-signin btn-sm" />
+            </div>        
+        </div>
+    </body>
+
+</form>
+
+
+<style>
+    body{
+        background-color: #FCE595;
+    }
+
+    #img-logo {
+        max-width: 400px;
+    }
+
+    .container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .card {
+        width: 18rem;
+        margin: 0 auto;
+        border-radius:20px;
+        border-color:black;
+        background-color: #305076;
+        
+    }
+
+    .btn-signin {        
+        font-size: 0.8rem;
+        width: 50%;
+        display: inline-block;
+        outline: 0;
+        border: 0;
+        cursor: pointer;
+        text-decoration: none;
+        position: relative;
+        color: #000;
+        background: #fff;
+        border-radius: 40px;
+        font-size: 30px;
+        font-weight: 600;
+        box-shadow: #fbe89c -2px -2px 0px 2px, #000000 0px 0px 0px 4px, rgba(0, 0, 0, 0.05) 0px 0px 2px 7px;
+        transition: all 0.2s;
+    }
+
+
+    .btn-signin:hover{
+            box-shadow: #000000 0px 0px 0px 4px, #fbe89c 0px 0px 0px 4px, rgba(0, 0, 0, 0.05) 0px 0px 2px 7px;
+            transform: scale(1.01);
+    }
+
+    #signin-id{
+        margin:10px;
+     
+    }
+
+    #input-username {
+        width: 200px;
+        height: 45px;
+        border-radius: 20px;
+        border-color: black;
+        margin-top: 20px;
+        text-align: center
+    }
+
+    #input-password {
+        width: 200px;
+        height: 45px;
+        border-radius: 20px;
+        border-color: black;
+        margin-top: 20px;
+        text-align: center
+    }
+
+    input[type="submit"] {
+        width: 80px;
+        height: 45px;
+        border-radius: 20px;
+        border-color: black;
+        text-align: center;
+        font-size: medium;
+        margin: auto;    
+        transition: all 0.3s;
+
+    }
+
+        input[type="submit"]:hover {
+            transform: translateY(-6px);
+        }
+</style>
+
+

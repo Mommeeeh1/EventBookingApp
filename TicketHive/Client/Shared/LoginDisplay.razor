@@ -1,0 +1,133 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Newtonsoft.Json;
+@using TicketHive.Shared.Models;
+@inject NavigationManager Navigation
+@inject Blazored.LocalStorage.ILocalStorageService localStorage;
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+
+    <AuthorizeView>
+        <Authorized>
+            <AuthorizeView Roles="User" Context="User">
+            <button id="btn-cart" class="fas fa-shopping-cart" @onclick="ShoppingCart"></button>
+            <a style="color: #305076" href="/user-page">@context.User.Identity?.Name!</a>
+            </AuthorizeView>
+            
+
+            <button class="nav-link btn btn-link" @onclick="BeginLogOut">Log out</button>
+        </Authorized>
+        <NotAuthorized>
+            <a style="color: #305076" href="authentication/register">Register</a>
+            <a style="color: #305076" href="authentication/login">Log in</a>
+        </NotAuthorized>
+    </AuthorizeView>
+
+
+
+@code{
+    private void BeginLogOut()
+    {
+        Navigation.NavigateToLogout("authentication/logout");
+    }
+    private void ShoppingCart()
+    {
+        Navigation.NavigateTo("/shoppingcart");
+    }
+}
+
+<style>
+
+    #counter {
+        background-color: red;
+        border-radius: 50%;
+        height: 20px; 
+        width: 20px; 
+        position: absolute;
+        top: -5px;
+        font-family:monospace;
+        right: -10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 16px;
+        color: white;
+    }
+
+    
+
+    #btn-cart {
+        background-color: #305076;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.4s;
+        position: relative;
+    }
+
+   
+
+
+
+     #btn-cart:hover{
+     transform:translateY(-5px)
+     }
+
+        
+</style>
+
+@code{
+
+    private int ItemCount = 0;
+
+    private List<BookingModel> cartItems;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await ReadLocalStorage();
+            StateHasChanged();
+        }
+    }
+
+    private async Task ReadLocalStorage()
+    {
+        var jsonString = await localStorage.GetItemAsync<string>("cart");
+
+        if (jsonString != null)
+        {
+            cartItems = JsonConvert.DeserializeObject<List<BookingModel>>(jsonString);
+            ItemCount = cartItems.Count;
+        }
+    }
+
+
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    List<BookingModel> cart = await localStorage.GetItemAsync<List<BookingModel>>("cart");
+    //    ItemCount = cart.Count;
+    //}
+
+    //public async Task GetItems()
+    //{
+    //    List<BookingModel> cart = await localStorage.GetItemAsync<List<BookingModel>>("cart");
+
+    //    int ItemCount = 0;
+    //    foreach(BookingModel booking in cart)
+    //    {
+    //        ItemCount++;
+    //    }
+    //}
+
+
+}

@@ -1,0 +1,59 @@
+﻿@*<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">TicketHive</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>*@
+
+
+<nav class="navbar bg-body-tertiary" style="background:#FCE595">
+    <div class="container-fluid" style="background: #FCE595 ">
+        <a class="navbar-brand" href="">
+            <img style="max-width: 200px" src="/Images/black only logo.png">
+        </a>
+    </div>
+</nav>
+
+
+
+@*<div class="@NavMenuCssClass nav-scrollable " style="background: #FCE595" @onclick="ToggleNavMenu">*@
+
+<div class="@NavMenuCssClass" style="background: #FCE595; " @onclick="ToggleNavMenu">
+
+    <nav class="flex-column">
+        <AuthorizeView Roles="User">
+            
+            <div class="nav-item px-3">
+                <NavLink style="color: #305076" class="nav-link" href="home">Home</NavLink>
+            </div>
+        </AuthorizeView>
+        <AuthorizeView Roles="User">
+            
+            <div class="nav-item px-3">
+                <NavLink style="color: #305076" class="nav-link" href="booking">Booking</NavLink>
+            </div>
+            
+        </AuthorizeView>
+        <AuthorizeView Roles="Admin">
+            <div class="nav-item px-3">
+                <NavLink style="color: #305076" class="nav-link" href="admin">Event Manager</NavLink>
+
+            </div>
+        </AuthorizeView>
+
+    </nav>
+</div>
+
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

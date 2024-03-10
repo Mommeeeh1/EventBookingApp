@@ -1,0 +1,110 @@
+﻿@page "/confirmation"
+@using Microsoft.AspNetCore.Authorization;
+@using Newtonsoft.Json;
+@using TicketHive.Shared.Models;
+@attribute [Authorize(Roles = "User")]
+@inject IShoppingcartRepo shoppingcartRepo;
+@inject IEventRepo eventRepo;
+@inject ICurrencyRepo currencyRepo
+
+<PageTitle>Confirmation</PageTitle>
+
+@if (cartItems.Count > 0)
+{
+    <header>
+        <h1 style="text-align:center;">Thank you for your purchase!</h1>
+        <div id="check-div">
+            <i id="checkmark"style="font-size:100px; background-color:#dddddd"  class="fas fa-check"></i>
+
+        </div>
+    </header>
+
+    <main>
+        <div id="display-div" class="row row-cols-3 row-cols-md-3 g-4 center">
+            @foreach (var item in bookingViews)
+            {
+                decimal totalPrice = Math.Round(CalculateTotalPrice(item.EventViewModel.PricePerTicket, item.Quantity),2 );
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <img style="max-width:100px" src="/Images/@item.EventViewModel.Image" class="card-img-top" alt="...">
+                            <h5 class="card-title">@item.EventViewModel.EventName</h5>
+                            <p class="card-text">@item.EventViewModel.EventPlace</p>
+                            <p class="card-text">@item.EventViewModel.Date</p>
+                            <p class="card-text">@item.Quantity /pcs @totalPrice @currencyRepo.GetCurrencyCode()</p>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </main>
+}
+@if (cartItems.Count == 0)
+{
+    <header>
+        <h1>Oops there's nothing here...</h1>
+    </header>
+}
+
+@code
+{
+    private List<BookingModel>? cartItems = new();
+    private List<BookingViewModel> bookingViews = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        cartItems = await shoppingcartRepo.GetCartFromLocalStorage();
+        await UpdateBookingViews();
+        await shoppingcartRepo.RemoveCart();
+    }
+
+    public decimal CalculateTotalPrice(decimal PricePerTicket, int quantity)
+    {
+        return PricePerTicket * quantity;
+
+    }
+
+    /// <summary>
+    /// Populates the bookingviews list with eventviewmodels based on cartitems
+    /// </summary>
+    /// <returns></returns>
+    private async Task UpdateBookingViews()
+    {
+        bookingViews.Clear();
+
+        foreach (var item in cartItems)
+        {
+            var eventView = await eventRepo.GetEventView(item.EventModelId);
+
+            BookingViewModel bookingView = new()
+                {
+                    EventModelId = eventView.Id,
+                    EventViewModel = await eventRepo.GetEventView(item.EventModelId),
+                    Quantity = item.Quantity
+                };
+            bookingViews.Add(bookingView);
+        }
+    }
+
+}
+
+<style>
+    #checkmark{
+        background-color:green;
+        border-radius:40%;
+        
+    }
+
+    #check-div{
+        display:flex;
+        justify-content:center;
+        align-content:center;
+    }
+
+    #display-div{
+        display:flex;
+        align-content:center;
+        justify-content:center;
+    }
+</style>
